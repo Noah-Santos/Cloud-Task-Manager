@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./normalize.css">
+    <link rel="stylesheet" href="./styles.css">
+    <title>Person</title>
+</head>
+<body>
+    <nav>
+        <div class="nav-center">
+            <h5>HTTP Methods</h5>
+            <div>
+                <a href="index.html">Regular</a>
+                <a href="javascript.html">JS</a>
+                <a href="all.html">All Tasks</a>
+            </div>
+        </div>
+    </nav>
+    <main>
+        <section>
+            <form>
+                <h3>Javascript Form</h3>
+                <div class="form-row">
+                    <label for="name"> enter name</label>
+                    <input type="text" name="name" id="name" class="form-input" autocomplete="false">
+                    <small class="form-alert"></small>
+                </div>
+                <div class="form-row">
+                    <label for="description"> enter dscription</label>
+                    <input type="text" name="description" id="description" class="form-input" autocomplete="false">
+                    <small class="form-alert"></small>
+                </div>
+                <button type="submit" class="block submit-btn form-row">submit</button>
+                <!-- <hr> -->
+                
+                <hr>
+                <div class="flex-row">
+                    <label for="tasks">Choose a task:</label>
+                    <select name="tasks" class="results" onchange="change()"></select>
+                </div>
+            </form>
+
+            <div>
+                <form class="data">
+                    <h4 class="task"></h4>
+                    <h2 class="description"></h2>
+                    <div class="form-row row">
+                        <button onclick="deleteThis()">Delete</button>
+                        <button><a href="./edit.html" class="editLink">Edit</a></button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js" integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ==" crossorigin="anonymous"></script>
+    <script src="personFile.js"></script>
+</body>
+</html>
