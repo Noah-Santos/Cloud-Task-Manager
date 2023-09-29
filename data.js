@@ -72,14 +72,16 @@ async function pushData(){
     }
   ];
 
-  for(let i = 0; i < task.length; i++){
-    fetch(`/api/task/`, {
-      method: "POST",
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({name:task.name, description:task.description, completed:task.completed, assigned:task.assigned, taskID:task.taskID}),
+  // for(let i = 0; i < task.length; i++){
+  //   fetch(`/api/task/`, {
+  //     method: "POST",
+  //     headers: {'Content-Type': 'application/json'},
+  //     body: JSON.stringify({name:task.name, description:task.description, completed:task.completed, assigned:task.assigned, taskID:task.taskID}),
         
-    })
-  }
+  //   })
+  // }
+  const tasks = new task({})
+await tasks.save()
 }
 
 pushData();
