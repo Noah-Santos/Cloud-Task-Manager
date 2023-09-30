@@ -93,6 +93,13 @@ btn.addEventListener('click', async(event)=>{
             let nameChange = newName.value;
             let ageChange = newAge.value;
 
+            const {data} = await axios.get('/api/people');
+            let person = data.map(people=>{
+                if(people.name == chosenName){
+                    return people.task;
+                }
+            })
+
             // will determine what value should be assigned to assigned value of the person object
             // also updates the task object to reflect being assigned to the person
             if(newAssign.value == '' || newAssign.value == "none"){
@@ -103,27 +110,40 @@ btn.addEventListener('click', async(event)=>{
                 data.map(task => {
                     if(temp == task.name){
                         newTask = newAssign.value;
-                        if(task.assigned == 'unassigned'){
+                        if(task.assigned == 'unassigned' &&  person==false){
                             fetch(`/api/task/${task.taskID}`, {
                                 method: "PUT",
                                 headers: {'Content-Type': 'application/json'},
                                 body: JSON.stringify({assigned:newName.value}),  
                             })
+                            // updates the person to be assigned to a task
+                            fetch(`/api/people/${chosenID}`, {
+                                method: "PUT",
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({name: nameChange, age: ageChange, task:newTask}),
+                                
+                            })
                             // prevents a new task from being assigned to a person if they already have a task
-                        }else if(task.assigned != "unassigned"){
+                        }else if(task.assigned != "unassigned" && person==true){
                             newPerson = 'unassigned';
+                            fetch(`/api/people/${chosenID}`, {
+                                method: "PUT",
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({name: nameChange, age: ageChange}),
+                                
+                            })
                         }
                     }
                 });
             }
 
-            // updates the person to be assigned to a task
-            fetch(`/api/people/${chosenID}`, {
-                method: "PUT",
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({name: nameChange, age: ageChange, task:newTask}),
+            // // updates the person to be assigned to a task
+            // fetch(`/api/people/${chosenID}`, {
+            //     method: "PUT",
+            //     headers: {'Content-Type': 'application/json'},
+            //     body: JSON.stringify({name: nameChange, age: ageChange, task:newTask}),
                 
-            })
+            // })
             window.location.href = "./people.html";
             fetchPeople();
             editMode = false;
