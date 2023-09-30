@@ -93,28 +93,28 @@ btn.addEventListener('click', async(event)=>{
             let nameChange = newName.value;
             let ageChange = newAge.value;
 
-
-            // will get the info from the page in order to update the task object
-            const {data} = await axios.get('/api/task');
-            let temp = newAssign.value;
-            data.map(task => {
-                if(temp == task.name){
-                    newTask = newAssign.value;
-                    if(task.assigned == 'unassigned'){
-                        fetch(`/api/task/${task.taskID}`, {
-                            method: "PUT",
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({assigned:newName.value}),  
-                        })
-                        // prevents a person from being assigned if the task already has a person assigned
-                    }else if(task.assigned != "unassigned"){
-                        newTask = 'none';
-                    }
-                }
-            });
-
+            // will determine what value should be assigned to assigned value of the person object
+            // also updates the task object to reflect being assigned to the person
             if(newAssign.value == '' || newAssign.value == "none"){
                 newTask = 'none';
+            }else if(newAssign.value != "none"){
+                const {data} = await axios.get('/api/task');
+                let temp = newAssign.value;
+                data.map(task => {
+                    if(temp == task.name){
+                        newTask = newAssign.value;
+                        if(task.assigned == 'unassigned'){
+                            fetch(`/api/task/${task.taskID}`, {
+                                method: "PUT",
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({assigned:newName.value}),  
+                            })
+                            // prevents a new task from being assigned to a person if they already have a task
+                        }else if(task.assigned != "unassigned"){
+                            newPerson = 'unassigned';
+                        }
+                    }
+                });
             }
 
             // updates the person to be assigned to a task
