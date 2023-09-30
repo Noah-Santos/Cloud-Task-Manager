@@ -48,6 +48,7 @@ async function change(){
             sessionStorage.setItem('chosenName', results.value);
             sessionStorage.setItem('chosenAge', person.age);
             sessionStorage.setItem('chosenID', person.userID);
+            sessionStorage.setItem('task', person.task);
             chosenID = person.userID;
             // console.log(chosenID)
         }
@@ -56,8 +57,9 @@ async function change(){
 
 function inputs(){
     // console.log('yes')
-    chosenName.value = sessionStorage.getItem('chosenName');
-    chosenAge.value = sessionStorage.getItem('chosenAge');
+    newName.value = sessionStorage.getItem('chosenName');
+    newAge.value = sessionStorage.getItem('chosenAge');
+    newAssign.value = sessionStorage.getItem('task');
     chosenID = sessionStorage.getItem('chosenID');
     // console.log(chosenID);
     // console.log(sessionStorage.getItem('chosenID'));
