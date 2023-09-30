@@ -13,6 +13,9 @@ const fetchTask = async() =>{
         results.innerHTML = task.join("");
 
         change();
+        newTask.value = '';
+        newDesc.value = '';
+        newAssign.value = '';
     }catch(e){
         // formAlert.textContent = e.response.data.msg;
     }
@@ -25,7 +28,7 @@ const input = document.querySelector('.form-input');
 const input2 = document.querySelector('#description');
 const newTask = document.querySelector('#newName');
 const newDesc = document.querySelector('#newDescription');
-const newAssign = document.querySelector('#newAssign');
+let newAssign = document.querySelector('#newAssign');
 const formAlert = document.querySelector('.form-alert');
 const task = document.querySelector('.task');
 const description = document.querySelector('.description');
@@ -33,6 +36,7 @@ const assignment = document.querySelector('.assignment');
 let chosenTask = ''; 
 let chosenDescription = '';
 let chosenID;
+let newPerson = '';
 
 async function change(){
     let {data} = await axios.get('/api/task');
@@ -79,23 +83,37 @@ btn.addEventListener('click', async(event)=>{
         }else{
             let taskChange = newTask.value;
             let descriptionChange = newDesc.value;
-            if(newAssign.value == ''){
-                assigned = 'unassigned';
-            }else{
-                assigned = newAssign.value;
+        
+            if(newAssign.value == '' || newAssign.value == "unassigned"){
+                newPerson = 'unassigned';
+            }else if(newAssign.value != "unassigned"){
+                const {data} = await axios.get('/api/people');
+                // going through the data array and getting the data that holds the value of data
+                let temp = newAssign.value;
+                data.map(person => {
+                    if(temp == person.name){
+                        newPerson = newAssign.value;
+                        if(person.task == 'none'){
+                            fetch(`/api/people/${person.userID}`, {
+                                method: "PUT",
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({task:newTask.value}),  
+                            })
+                        }
+                    }
+                });
             }
+
             // console.log(taskChange)
             fetch(`/api/task/${chosenID}`, {
                 method: "PUT",
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({name: taskChange, description: descriptionChange, assigned:assigned}),
+                body: JSON.stringify({name: taskChange, description: descriptionChange, assigned:newPerson}),
                 
             })
-            newTask.value = '';
-            newDesc.value = '';
-            newAssign.value = '';
             fetchTask();
             editMode = false;
+            window.location.href = "./javascript.html";
         }
     }catch(e){
         console.log(e);
@@ -121,4 +139,31 @@ function deleteThis(){
         headers: {'Content-Type': 'application/json'},
     })
     fetchTask();
+}
+
+async function checkInfo(){
+    let person;
+    if(true){
+        const {data} = await axios.get('/api/people');
+        person = data.map(person=>{
+            if(person.task == 'none'){
+                return person.name;
+            }
+        })
+    }
+    if(true){
+        let {data} = await axios.get('/api/task');
+        data.map(task=>{
+            for(let i = 0; i < person.length; i++){
+                if(task.assigned == person[i]){
+                    fetch(`/api/task/${task.taskID}`, {
+                        method: "PUT",
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({assigned:'unassigned'}),
+                        
+                    })
+                }
+            }
+        })
+    }
 }

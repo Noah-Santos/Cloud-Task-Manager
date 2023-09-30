@@ -12,6 +12,9 @@ const fetchPeople = async() =>{
 
         results.innerHTML = people.join("");
 
+        newName.value = '';
+        newAge.value = '';
+        newAssign.value = '';
         change();
     }catch(e){
         // formAlert.textContent = e.response.data.msg;
@@ -37,6 +40,7 @@ const assignment = document.querySelector('.task');
 let chosenName = ''; 
 let chosenAge = '';
 let chosenID;
+let newTask = '';
 
 async function change(){
     let {data} = await axios.get('/api/people');
@@ -85,21 +89,35 @@ btn.addEventListener('click', async(event)=>{
         }else{
             let nameChange = newName.value;
             let ageChange = newAge.value;
-            if(newAssign.value == ''){
-                assigned = 'unassigned';
-            }else{
-                assigned = newAssign.value;
+
+            const {data} = await axios.get('/api/task');
+            // going through the data array and getting the data that holds the value of data
+            let temp = newAssign.value;
+            data.map(task => {
+                if(temp == task.name){
+                    newTask = newAssign.value;
+                    if(task.assigned == 'unassigned'){
+                        fetch(`/api/task/${task.taskID}`, {
+                            method: "PUT",
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({assigned:newName.value}),  
+                        })
+                    }
+                }
+            });
+
+            if(newAssign.value == '' || newAssign.value == "none"){
+                newTask = 'none';
             }
+
             // console.log(taskChange)
             fetch(`/api/people/${chosenID}`, {
                 method: "PUT",
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({name: nameChange, age: ageChange, task:assigned}),
+                body: JSON.stringify({name: nameChange, age: ageChange, task:newTask}),
                 
             })
-            newName.value = '';
-            newAge.value = '';
-            newAssign.value = '';
+            window.location.href = "./people.html";
             fetchPeople();
             editMode = false;
         }
@@ -115,11 +133,25 @@ var currentId = '';
 function nameAlter(){
     editMode = true;
     newName.value = chosenName;
-    newage.value = chosenAge;
+    newAge.value = chosenAge;
 }
 
 
-function deleteThis(){
+async function deleteThis(){
+    // const {data} = await axios.get('/api/people');
+    // data.map(person=>{
+    //     if(person.userID == chosenID){
+    //         if(person.task != 'none'){
+    //             fetch(`/api/task/${chosenID}`, {
+    //                 // makes sure that the put function is the one that is grabbed
+    //                 method: "DELETE",
+    //                 // determines what data to send
+    //                 headers: {'Content-Type': 'application/json'},
+    //             })
+    //         }
+    //     }
+    // })
+
     fetch(`/api/people/${chosenID}`, {
         // makes sure that the put function is the one that is grabbed
         method: "DELETE",
@@ -127,4 +159,38 @@ function deleteThis(){
         headers: {'Content-Type': 'application/json'},
     })
     fetchPeople();
+}
+
+async function infoPerson(){
+    let {data} = await axios.get('/api/people');
+    names.innerHTML = data[0].name;
+    age.innerHTML = data[0].age;
+    assignment.innerHTML = `Task: ${data[0].task}`;
+}
+
+async function checkInfo(){
+    let task;
+    if(true){
+        const {data} = await axios.get('/api/task');
+        task = data.map(task=>{
+            if(task.assigned == 'unassigned'){
+                return task.name;
+            }
+        })
+    }
+    if(true){
+        let {data} = await axios.get('/api/people');
+        data.map(person=>{
+            for(let i = 0; i < task.length; i++){
+                if(person.task == task[i]){
+                    fetch(`/api/people/${person.userID}`, {
+                        method: "PUT",
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({task:'none'}),
+                        
+                    })
+                }
+            }
+        })
+    }
 }
