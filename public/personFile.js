@@ -26,7 +26,6 @@ fetchPeople();
 const btn = document.querySelector('.submit-btn');
 const input = document.querySelector('.form-input');
 const input2 = document.querySelector('#age');
-const input3 = document.querySelector('#task');
 
 const newName = document.querySelector('#newName');
 const newAge = document.querySelector('#newAge');
@@ -77,15 +76,13 @@ btn.addEventListener('click', async(event)=>{
         if(!editMode){
             let nameValue = input.value;
             let ageValue = input2.value;
-            let taskValue = input3.value;
-            const {data} = await axios.post('/api/people', {name: nameValue, age:ageValue, task:taskValue});
+            const {data} = await axios.post('/api/people', {name: nameValue, age:ageValue});
             const h5 = document.createElement('h5');
             h5.textContent = data.person;
             results.appendChild(h5);
             fetchPeople();
             input.value='';
             input2.value='';
-            input3.value='';
         }else{
             let nameChange = newName.value;
             let ageChange = newAge.value;
@@ -137,21 +134,7 @@ function nameAlter(){
 }
 
 
-async function deleteThis(){
-    // const {data} = await axios.get('/api/people');
-    // data.map(person=>{
-    //     if(person.userID == chosenID){
-    //         if(person.task != 'none'){
-    //             fetch(`/api/task/${chosenID}`, {
-    //                 // makes sure that the put function is the one that is grabbed
-    //                 method: "DELETE",
-    //                 // determines what data to send
-    //                 headers: {'Content-Type': 'application/json'},
-    //             })
-    //         }
-    //     }
-    // })
-
+let deleteThis = async(event)=>{
     fetch(`/api/people/${chosenID}`, {
         // makes sure that the put function is the one that is grabbed
         method: "DELETE",
@@ -193,4 +176,26 @@ async function checkInfo(){
             }
         })
     }
+
+    // let allTasks;
+    // if(true){
+    //     const {data} = await axios.get('/api/task');
+    //     allTasks = data.map(task=>{
+    //         return task.name;
+    //     })
+    // }
+    // if(true){
+    //     let {data} = await axios.get('/api/people');
+    //     data.map(person=>{
+    //         if(!allTasks.some(task=>{
+    //             task == person.task
+    //         })){
+    //             fetch(`/api/people/${person.userID}`, {
+    //                 method: "PUT",
+    //                 headers: {'Content-Type': 'application/json'},
+    //                 body: JSON.stringify({task:'none'}),
+    //             })
+    //         }
+    //     })
+    // }
 }

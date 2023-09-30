@@ -107,3 +107,55 @@ function change(){
         fetchPeople();
     }
 }
+
+async function checkInfo(){
+    let task;
+    if(true){
+        const {data} = await axios.get('/api/task');
+        task = data.map(task=>{
+            if(task.assigned == 'unassigned'){
+                return task.name;
+            }
+        })
+    }
+    if(true){
+        let {data} = await axios.get('/api/people');
+        data.map(person=>{
+            for(let i = 0; i < task.length; i++){
+                if(person.task == task[i]){
+                    fetch(`/api/people/${person.userID}`, {
+                        method: "PUT",
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({task:'none'}),
+                        
+                    })
+                }
+            }
+        })
+    }
+
+    let person;
+    if(true){
+        const {data} = await axios.get('/api/people');
+        person = data.map(person=>{
+            if(person.task == 'none'){
+                return person.name;
+            }
+        })
+    }
+    if(true){
+        let {data} = await axios.get('/api/task');
+        data.map(task=>{
+            for(let i = 0; i < person.length; i++){
+                if(task.assigned == person[i]){
+                    fetch(`/api/task/${task.taskID}`, {
+                        method: "PUT",
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({assigned:'unassigned'}),
+                        
+                    })
+                }
+            }
+        })
+    }
+}

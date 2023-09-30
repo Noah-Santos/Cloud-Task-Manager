@@ -166,4 +166,26 @@ async function checkInfo(){
             }
         })
     }
+
+    // let allPeople;
+    // if(true){
+    //     const {data} = await axios.get('/api/people');
+    //     allPeople = data.map(person=>{
+    //         return person.name;
+    //     })
+    // }
+    // if(true){
+    //     let {data} = await axios.get('/api/task');
+    //     data.map(task=>{
+    //         if(!allPeople.some(person=>{
+    //             person == task.assigned
+    //         })){
+    //             fetch(`/api/task/${task.taskID}`, {
+    //                 method: "PUT",
+    //                 headers: {'Content-Type': 'application/json'},
+    //                 body: JSON.stringify({assigned:'unassigned'}),
+    //             })
+    //         }
+    //     })
+    // }
 }
