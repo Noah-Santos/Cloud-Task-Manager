@@ -175,6 +175,17 @@ h5 {
   background-color: #aaaaaa;
 }
 
+.centerForm {
+  width: 100%;
+  background: var(--white);
+  border-radius: var(--borderRadius);
+  box-shadow: var(--shadow-2);
+  padding: 2rem 2.5rem;
+  display: flex;
+  justify-content: center;
+  font-size: 200%;
+}
+
 .marginGone{
   margin: 0rem;
 }

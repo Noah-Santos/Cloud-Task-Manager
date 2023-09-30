@@ -1,56 +1,63 @@
 const results = document.querySelector('.results');
 
-const fetchTask = async() =>{
+const fetchPeople = async() =>{
     try {
-        const {data} = await axios.get('/api/task');
+        const {data} = await axios.get('/api/people');
         console.log(data);
 
         // going through the data array and getting the data that holds the value of data
-        const task = data.map((tasks)=>{
-            return `<option value="${tasks.name}">${tasks.name}</option>`;
+        const people = data.map((person)=>{
+            return `<option value="${person.name}">${person.name}</option>`;
         })
 
-        results.innerHTML = task.join("");
+        results.innerHTML = people.join("");
 
         change();
     }catch(e){
         // formAlert.textContent = e.response.data.msg;
     }
 }
-fetchTask();
+fetchPeople();
 
 // HTML Submit Form
 const btn = document.querySelector('.submit-btn');
 const input = document.querySelector('.form-input');
-const input2 = document.querySelector('#description');
-const newTask = document.querySelector('#newName');
-const newDesc = document.querySelector('#newDescription');
+const input2 = document.querySelector('#age');
+const input3 = document.querySelector('#task');
+
+const newName = document.querySelector('#newName');
+const newAge = document.querySelector('#newAge');
+const newAssign = document.querySelector('#newAssign');
+
 const formAlert = document.querySelector('.form-alert');
-const task = document.querySelector('.task');
-const description = document.querySelector('.description');
-let chosenTask = ''; 
-let chosenDescription = '';
+
+const names = document.querySelector('.name');
+const age = document.querySelector('.age');
+const assignment = document.querySelector('.task');
+let chosenName = ''; 
+let chosenAge = '';
 let chosenID;
 
 async function change(){
-    let {data} = await axios.get('/api/task');
-    task.innerHTML = results.value;
-    data.find(task =>{
-        if(task.name == results.value){
-            description.innerHTML = task.description;
-            sessionStorage.setItem('chosenTask', results.value);
-            sessionStorage.setItem('chosenDescription', task.description);
-            sessionStorage.setItem('chosenID', task.id);
-            chosenID = task.id;
-            console.log(chosenID)
+    let {data} = await axios.get('/api/people');
+    names.innerHTML = results.value;
+    data.find(person =>{
+        if(person.name == results.value){
+            age.innerHTML = person.age;
+            assignment.innerHTML = `Task: ${person.task}`;
+            sessionStorage.setItem('chosenName', results.value);
+            sessionStorage.setItem('chosenAge', person.age);
+            sessionStorage.setItem('chosenID', person.userID);
+            chosenID = person.userID;
+            // console.log(chosenID)
         }
     })
 }
 
 function inputs(){
     // console.log('yes')
-    newTask.value = sessionStorage.getItem('chosenTask');
-    newDesc.value = sessionStorage.getItem('chosenDescription');
+    chosenName.value = sessionStorage.getItem('chosenName');
+    chosenAge.value = sessionStorage.getItem('chosenAge');
     chosenID = sessionStorage.getItem('chosenID');
     // console.log(chosenID);
     // console.log(sessionStorage.getItem('chosenID'));
@@ -63,31 +70,39 @@ btn.addEventListener('click', async(event)=>{
     try{
         if(!editMode){
             let nameValue = input.value;
-            let descValue = input2.value;
-            const {data} = await axios.post('/api/task', {name: nameValue,description:descValue});
+            let ageValue = input2.value;
+            let taskValue = input3.value;
+            const {data} = await axios.post('/api/people', {name: nameValue, age:ageValue, task:taskValue});
             const h5 = document.createElement('h5');
-            h5.textContent = data.tasks;
-            result.appendChild(h5);
-            fetchTask();
+            h5.textContent = data.person;
+            results.appendChild(h5);
+            fetchPeople();
             input.value='';
             input2.value='';
+            input3.value='';
         }else{
-            let taskChange = newTask.value;
-            let descriptionChange = newDesc.value;
+            let nameChange = newName.value;
+            let ageChange = newAge.value;
+            if(newAssign.value == ''){
+                assigned = 'unassigned';
+            }else{
+                assigned = newAssign.value;
+            }
             // console.log(taskChange)
-            fetch(`/api/task/${chosenID}`, {
+            fetch(`/api/people/${chosenID}`, {
                 method: "PUT",
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({name: taskChange, description: descriptionChange}),
+                body: JSON.stringify({name: nameChange, age: ageChange, task:assigned}),
                 
             })
-            newTask.value = '';
-            newDesc.value = '';
-            fetchTask();
+            newName.value = '';
+            newAge.value = '';
+            newAssign.value = '';
+            fetchPeople();
             editMode = false;
         }
     }catch(e){
-        console.log(e.response);
+        console.log(e);
         // formAlert.textContent = e.response.data.msg;
     }
 });
@@ -97,17 +112,17 @@ var currentId = '';
 
 function nameAlter(){
     editMode = true;
-    newTask.value = chosenTask;
-    newDesc.value = chosenDescription;
+    newName.value = chosenName;
+    newage.value = chosenAge;
 }
 
 
 function deleteThis(){
-    fetch(`/api/task/${chosenID}`, {
+    fetch(`/api/people/${chosenID}`, {
         // makes sure that the put function is the one that is grabbed
         method: "DELETE",
         // determines what data to send
         headers: {'Content-Type': 'application/json'},
     })
-    fetchTask();
+    fetchPeople();
 }

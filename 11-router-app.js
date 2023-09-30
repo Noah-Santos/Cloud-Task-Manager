@@ -4,7 +4,7 @@ const morgan = require('morgan');
 require('dotenv').config();
 require('./db/connect');
 
-// const people = require('./routes/people-controller');
+const people = require('./routes/people-controller');
 const task = require('./routes/task-controller');
 const auth = require('./routes/auth');
 const connectDB = require('./db/connect');
@@ -18,6 +18,7 @@ app.use(express.json());
 
 // routes/router
 app.use('/api/task', task);
+app.use('/api/people', people);
 // app.use('/api/people', people);
 app.use('/login', auth);
 

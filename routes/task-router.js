@@ -56,8 +56,8 @@ router.put('/:taskID', async(req,res)=>{
 router.delete('/:taskID', async(req, res)=>{
     try {
         const {taskID} = req.params;
-        let person = await Task.findOneAndDelete({taskID:taskID});
-        res.json(person);
+        let task = await Task.findOneAndDelete({taskID:taskID});
+        res.json(task);
     } catch (error) {
         console.log(error);
     }

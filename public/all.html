@@ -15,13 +15,21 @@
             <h5>HTTP Methods</h5>
             <div>
                 <a href="index.html">Regular</a>
-                <a href="javascript.html">JS</a>
-                <a href="all.html">All Tasks</a>
+                <a href="javascript.html">Task</a>
+                <a href="people.html">People</a>
+                <a href="all.html">All</a>
             </div>
         </div>
     </nav>
     <main>
-        <div class="list"></div>
+        <div class="flex-row centerForm">
+            <label for="type">Choose a category:</label>
+            <select name="type" class="dropdown" onclick="change()">
+                <option value="task">Tasks</option>
+                <option value="people">People</option>
+            </select>
+        </div>
+        <div class="results"></div>
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"
         integrity="sha512-bZS47S7sPOxkjU/4Bt0zrhEtWx0y0CRkhEp8IckzK+ltifIIE9EMIMTuT/mEzoIMewUINruDBIR/jJnbguonqQ=="
