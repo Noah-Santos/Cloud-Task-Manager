@@ -25,9 +25,11 @@ const input = document.querySelector('.form-input');
 const input2 = document.querySelector('#description');
 const newTask = document.querySelector('#newName');
 const newDesc = document.querySelector('#newDescription');
+const newAssign = document.querySelector('#newAssign');
 const formAlert = document.querySelector('.form-alert');
 const task = document.querySelector('.task');
 const description = document.querySelector('.description');
+const assignment = document.querySelector('.assignment');
 let chosenTask = ''; 
 let chosenDescription = '';
 let chosenID;
@@ -38,6 +40,7 @@ async function change(){
     data.find(task =>{
         if(task.name == results.value){
             description.innerHTML = task.description;
+            assignment.innerHTML = `Assigned: ${task.assigned}`;
             sessionStorage.setItem('chosenTask', results.value);
             sessionStorage.setItem('chosenDescription', task.description);
             sessionStorage.setItem('chosenID', task.taskID);
@@ -74,15 +77,21 @@ btn.addEventListener('click', async(event)=>{
         }else{
             let taskChange = newTask.value;
             let descriptionChange = newDesc.value;
+            if(newAssign.value == ''){
+                assigned = 'unassigned';
+            }else{
+                assigned = newAssign.value;
+            }
             // console.log(taskChange)
             fetch(`/api/task/${chosenID}`, {
                 method: "PUT",
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({name: taskChange, description: descriptionChange}),
+                body: JSON.stringify({name: taskChange, description: descriptionChange, assigned:assigned}),
                 
             })
             newTask.value = '';
             newDesc.value = '';
+            newAssign.value = '';
             fetchTask();
             editMode = false;
         }

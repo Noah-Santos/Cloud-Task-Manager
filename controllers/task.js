@@ -30,7 +30,7 @@ const createTask = async(req,res)=>{
 const updateTask = async(req,res)=>{
     try {
         let {taskID} = req.params;
-        let {name, description, assigned} = req.body;
+        let {name, description, assigned, completed} = req.body;
         let changePerson = Task.findById(taskID)
 
         if(!name){
@@ -43,7 +43,7 @@ const updateTask = async(req,res)=>{
             assigned = changePerson.assigned;
         }
 
-        let task = await Task.findOneAndUpdate({taskID:taskID}, {name:name, description:description, assigned:assigned});
+        let task = await Task.findOneAndUpdate({taskID:taskID}, {name:name, description:description, assigned:assigned, completed:completed});
         res.json(task);
     } catch (error) {
         console.log(error);

@@ -1,15 +1,14 @@
-// const tasks = require("../models/tasks");
-
 const result = document.querySelector('.list');
 
-const fetchTask = async() =>{
+const fetchTask = async(value) =>{
     
     try {
         const {data} = await axios.get('/api/task');
         // going through the data array and getting the data that holds the value of data
 
         let task = data.map(tasks =>{
-            if(tasks.completed){
+            console.log(tasks.completed);
+            if(value){
                 return `
                 <form class="allRow completedForm">
                     <div class="taskAll">
@@ -24,7 +23,7 @@ const fetchTask = async() =>{
                         <input type="checkbox" id="item${tasks.taskID}" name="${tasks.taskID}" value="${tasks.name}" onclick="checkedTask(${tasks.taskID})" checked>
                     </div>
                 </form>`;
-            }else if(!tasks.completed){
+            }else if(!value){
                 return `
                 <form class="allRow">
                     <div class="taskAll">
@@ -41,47 +40,47 @@ const fetchTask = async() =>{
                 </form>`;
             }
         })
-        data.map((tasks)=>{
-            
-        })
 
         result.innerHTML = task.join("");
     }catch(e){
         // formAlert.textContent = e.response.data.msg;
     }
 }
-fetchTask();
+fetchTask(false);
 
 async function checkedTask(id){
+    console.log(id);
     let element = document.getElementById(`item${id}`);
     const {data} = await axios.get('/api/task');
     let name = '';
     let description = '';
 
-    data.map(task=>{
-        if(task.taskID == id){
-            name = task.name;
-            description = task.description;
-            assigned = task.assigned;
-        }
-    })
+    // data.map(task=>{
+    //     if(task.taskID == id){
+    //         name = task.name;
+    //         description = task.description;
+    //         assigned = task.assigned;
+    //     }
+    // })
 
     if(element.checked){
+        console.log('checked')
         fetch(`/api/task/${id}`, {
             method: "PUT",
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({completed: true, name:name, description:description, assigned:assigned}),
+            body: JSON.stringify({completed: true}),
         })
-        console.log('checked')
         element.classList.add('completed');
+        fetchTask(true);
     }else if(!element.checked){
         fetch(`/api/task/${id}`, {
             method: "PUT",
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({completed: false, name:name, description:description, assigned:assigned}),
+            body: JSON.stringify({completed: false}),
         })
         console.log('unchecked')
         element.classList.remove('completed')
+        fetchTask(false);
     }
-    fetchTask();
+    
 }

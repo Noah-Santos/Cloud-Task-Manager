@@ -44,9 +44,6 @@ router.put('/:taskID', async(req,res)=>{
         if(!assigned){
             assigned = changeTask.assigned;
         }
-        if(!completed){
-            completed = changeTask.completed;
-        }
 
         let task = await Task.findOneAndUpdate({taskID:taskID}, {name:name, description:description, assigned:assigned, completed:completed});
         res.json(task);

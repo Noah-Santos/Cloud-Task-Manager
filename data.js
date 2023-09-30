@@ -1,5 +1,8 @@
-async function pushData(){
-  const task = [
+let TASK = require('./models/tasks');
+const connectDB = require('./db/connect');
+// const tasks = require('./models/tasks');
+
+const task = [
   {
         "name": "Essay",
         "description": "Write essay",
@@ -69,19 +72,88 @@ async function pushData(){
         "taskID": 10,
         "completed": false,
         "assigned": "unassigned"
+    },
+    {
+        "name": "Trash",
+        "description": "Take out trash",
+        "taskID": 11,
+        "completed": false,
+        "assigned": "unassigned"
+    },
+    {
+        "name": "Shop",
+        "description": "Get grocery supplies",
+        "taskID": 12,
+        "completed": false,
+        "assigned": "unassigned"
+    },
+    {
+        "name": "Gift",
+        "description": "Find birthday gift",
+        "taskID": 13,
+        "completed": false,
+        "assigned": "unassigned"
+    },
+    {
+        "name": "Cook",
+        "description": "Cook food for the week",
+        "taskID": 14,
+        "completed": false,
+        "assigned": "unassigned"
+    },
+    {
+        "name": "Organize",
+        "description": "Organize cables",
+        "taskID": 15,
+        "completed": false,
+        "assigned": "unassigned"
+    },
+    {
+        "name": "Laundry",
+        "description": "Fold laundry",
+        "taskID": 16,
+        "completed": false,
+        "assigned": "unassigned"
+    },
+    {
+        "name": "Socialize",
+        "description": "Talk to peers",
+        "taskID": 17,
+        "completed": false,
+        "assigned": "unassigned"
+    },
+    {
+        "name": "Training",
+        "description": "Finish internship training",
+        "taskID": 18,
+        "completed": false,
+        "assigned": "unassigned"
+    },
+    {
+        "name": "Sleep",
+        "description": "Get 8 hours of rest",
+        "taskID": 19,
+        "completed": false,
+        "assigned": "unassigned"
+    },
+    {
+        "name": "Gaming",
+        "description": "Finish next level in game",
+        "taskID": 20,
+        "completed": false,
+        "assigned": "unassigned"
     }
   ];
 
-  // for(let i = 0; i < task.length; i++){
-  //   fetch(`/api/task/`, {
-  //     method: "POST",
-  //     headers: {'Content-Type': 'application/json'},
-  //     body: JSON.stringify({name:task.name, description:task.description, completed:task.completed, assigned:task.assigned, taskID:task.taskID}),
+// async function pushData(){
+//     let data = await connectDB();
+//     // let tasks = await data.insert(task);
+//     // console.log(tasks)
+//     // for(let i = 0; i < task.length; i++){
         
-  //   })
-  // }
-  const tasks = new task({})
-await tasks.save()
-}
+//     // }
+//     // await data.Tasks.insert(task)
+//     db.Tasks.insert(task);
+// }
 
-pushData();
+// pushData();
