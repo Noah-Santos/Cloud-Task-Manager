@@ -1,5 +1,6 @@
 const results = document.querySelector('.results');
 
+// displays all of the tasks and their info
 const fetchTask = async() =>{
     try {
         const {data} = await axios.get('/api/task');
@@ -22,14 +23,19 @@ const fetchTask = async() =>{
 }
 fetchTask();
 
-// HTML Submit Form
+// gets the info for a new task
 const btn = document.querySelector('.submit-btn');
 const input = document.querySelector('.form-input');
 const input2 = document.querySelector('#description');
+
+// gets the info to change a current task
 const newTask = document.querySelector('#newName');
 const newDesc = document.querySelector('#newDescription');
 let newAssign = document.querySelector('#newAssign');
+
 const formAlert = document.querySelector('.form-alert');
+
+// gets the sections to display task info
 const task = document.querySelector('.task');
 const description = document.querySelector('.description');
 const assignment = document.querySelector('.assignment');
@@ -38,6 +44,8 @@ let chosenDescription = '';
 let chosenID;
 let newPerson = '';
 
+// changes the content of the page when a new task is selected from the dropdown
+// also pushes data into session storage, so when user edits the task, it knows what info to autofill in the input sections
 async function change(){
     let {data} = await axios.get('/api/task');
     task.innerHTML = results.value;
@@ -50,19 +58,16 @@ async function change(){
             sessionStorage.setItem('chosenID', task.taskID);
             sessionStorage.setItem('assigned', task.assigned);
             chosenID = task.taskID;
-            console.log(chosenID)
         }
     })
 }
 
+// gets the data from the previously selected task in order to autofill the input sections on the edit page
 function inputs(){
-    // console.log('yes')
     newTask.value = sessionStorage.getItem('chosenTask');
     newDesc.value = sessionStorage.getItem('chosenDescription');
     newAssign.value = sessionStorage.getItem('assigned');
     chosenID = sessionStorage.getItem('chosenID');
-    // console.log(chosenID);
-    // console.log(sessionStorage.getItem('chosenID'));
     editMode = true;
 }
 
@@ -70,6 +75,7 @@ btn.addEventListener('click', async(event)=>{
     // prevents page from reloading on submit because we are doing something with the data
     event.preventDefault();
     try{
+        // gets the info to create a new task
         if(!editMode){
             let nameValue = input.value;
             let descValue = input2.value;
@@ -80,15 +86,17 @@ btn.addEventListener('click', async(event)=>{
             fetchTask();
             input.value='';
             input2.value='';
+        // gets the info to update a task
         }else{
             let taskChange = newTask.value;
             let descriptionChange = newDesc.value;
         
+            // will determine what value should be assigned to assigned value of the task object
+            // also updates the person object to reflect being assigned to the task
             if(newAssign.value == '' || newAssign.value == "unassigned"){
                 newPerson = 'unassigned';
             }else if(newAssign.value != "unassigned"){
                 const {data} = await axios.get('/api/people');
-                // going through the data array and getting the data that holds the value of data
                 let temp = newAssign.value;
                 data.map(person => {
                     if(temp == person.name){
@@ -99,6 +107,7 @@ btn.addEventListener('click', async(event)=>{
                                 headers: {'Content-Type': 'application/json'},
                                 body: JSON.stringify({task:newTask.value}),  
                             })
+                            // prevents a new task from being assigned to a person if they already have a task
                         }else if(person.task != "none"){
                             newPerson = 'unassigned';
                         }
@@ -106,7 +115,7 @@ btn.addEventListener('click', async(event)=>{
                 });
             }
 
-            // console.log(taskChange)
+            // updates the object to assign the new person
             fetch(`/api/task/${chosenID}`, {
                 method: "PUT",
                 headers: {'Content-Type': 'application/json'},
@@ -126,13 +135,14 @@ btn.addEventListener('click', async(event)=>{
 var editMode = false;
 var currentId = '';
 
+// gets the info for when the task is edited
 function nameAlter(){
     editMode = true;
     newTask.value = chosenTask;
     newDesc.value = chosenDescription;
 }
 
-
+// deleted the task
 function deleteThis(){
     fetch(`/api/task/${chosenID}`, {
         // makes sure that the put function is the one that is grabbed
@@ -143,6 +153,7 @@ function deleteThis(){
     fetchTask();
 }
 
+// if the person is unassigned from a task, it will unassign the task from the person once this task page loads
 async function checkInfo(){
     let person;
     if(true){

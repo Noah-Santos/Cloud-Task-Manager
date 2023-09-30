@@ -1,5 +1,6 @@
 const results = document.querySelector('.results');
 
+// loads the page with all of the different people and their info
 const fetchPeople = async() =>{
     try {
         const {data} = await axios.get('/api/people');
@@ -22,25 +23,31 @@ const fetchPeople = async() =>{
 }
 fetchPeople();
 
-// HTML Submit Form
+// gets the info for a new user
 const btn = document.querySelector('.submit-btn');
 const input = document.querySelector('.form-input');
 const input2 = document.querySelector('#age');
 
+// get the info to change user info
 const newName = document.querySelector('#newName');
 const newAge = document.querySelector('#newAge');
 const newAssign = document.querySelector('#newAssign');
 
 const formAlert = document.querySelector('.form-alert');
 
+// gets the sections of the html page to display user info
 const names = document.querySelector('.name');
 const age = document.querySelector('.age');
 const assignment = document.querySelector('.task');
+
 let chosenName = ''; 
 let chosenAge = '';
 let chosenID;
 let newTask = '';
 
+
+// changes the content of the page when a new person is selected from the dropdown
+// also pushes data into session storage, so when user edits the person, it knows what info to autofill in the input sections
 async function change(){
     let {data} = await axios.get('/api/people');
     names.innerHTML = results.value;
@@ -53,19 +60,16 @@ async function change(){
             sessionStorage.setItem('chosenID', person.userID);
             sessionStorage.setItem('task', person.task);
             chosenID = person.userID;
-            // console.log(chosenID)
         }
     })
 }
 
+// gets the data from the previously selected person in order to autofill the input sections on the edit page
 function inputs(){
-    // console.log('yes')
     newName.value = sessionStorage.getItem('chosenName');
     newAge.value = sessionStorage.getItem('chosenAge');
     newAssign.value = sessionStorage.getItem('task');
     chosenID = sessionStorage.getItem('chosenID');
-    // console.log(chosenID);
-    // console.log(sessionStorage.getItem('chosenID'));
     editMode = true;
 }
 
@@ -73,6 +77,7 @@ btn.addEventListener('click', async(event)=>{
     // prevents page from reloading on submit because we are doing something with the data
     event.preventDefault();
     try{
+        // gets the information to create a new person
         if(!editMode){
             let nameValue = input.value;
             let ageValue = input2.value;
@@ -83,12 +88,14 @@ btn.addEventListener('click', async(event)=>{
             fetchPeople();
             input.value='';
             input2.value='';
+        // gets the info to edit a person
         }else{
             let nameChange = newName.value;
             let ageChange = newAge.value;
 
+
+            // will get the info from the page in order to update the task object
             const {data} = await axios.get('/api/task');
-            // going through the data array and getting the data that holds the value of data
             let temp = newAssign.value;
             data.map(task => {
                 if(temp == task.name){
@@ -99,6 +106,7 @@ btn.addEventListener('click', async(event)=>{
                             headers: {'Content-Type': 'application/json'},
                             body: JSON.stringify({assigned:newName.value}),  
                         })
+                        // prevents a person from being assigned if the task already has a person assigned
                     }else if(task.assigned != "unassigned"){
                         newTask = 'none';
                     }
@@ -109,7 +117,7 @@ btn.addEventListener('click', async(event)=>{
                 newTask = 'none';
             }
 
-            // console.log(taskChange)
+            // updates the person to be assigned to a task
             fetch(`/api/people/${chosenID}`, {
                 method: "PUT",
                 headers: {'Content-Type': 'application/json'},
@@ -129,13 +137,14 @@ btn.addEventListener('click', async(event)=>{
 var editMode = false;
 var currentId = '';
 
+// gets info for editing the person
 function nameAlter(){
     editMode = true;
     newName.value = chosenName;
     newAge.value = chosenAge;
 }
 
-
+// deletes the person
 let deleteThis = async(event)=>{
     fetch(`/api/people/${chosenID}`, {
         // makes sure that the put function is the one that is grabbed
@@ -146,6 +155,7 @@ let deleteThis = async(event)=>{
     fetchPeople();
 }
 
+// when the page loads, it will fill the information of the first person onto the little section at the bottom
 async function infoPerson(){
     let {data} = await axios.get('/api/people');
     names.innerHTML = data[0].name;
@@ -153,6 +163,7 @@ async function infoPerson(){
     assignment.innerHTML = `Task: ${data[0].task}`;
 }
 
+// if the task is unassigned from a person, it will unassign the person from the task once this person page loads
 async function checkInfo(){
     let task;
     if(true){

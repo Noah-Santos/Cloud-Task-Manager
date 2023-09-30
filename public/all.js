@@ -1,4 +1,6 @@
 let result = document.querySelector('.results');
+
+// determines which format the task should be loaded in
 const fetchTask = async() =>{
     
     try {
@@ -46,6 +48,7 @@ const fetchTask = async() =>{
 }
 fetchTask();
 
+// loads all the people
 const fetchPeople = async() =>{
     
     try {
@@ -71,6 +74,7 @@ const fetchPeople = async() =>{
     }
 }
 
+// determines whether the task is completed or uncompleted when it is clicked
 async function checkedTask(id){
     console.log(id);
     let element = document.getElementById(`item${id}`);
@@ -95,7 +99,7 @@ async function checkedTask(id){
     fetchTask();
 }
 
-
+// determines which set of data to display
 let dropdown = document.querySelector(".dropdown");
 
 function change(){
@@ -108,6 +112,7 @@ function change(){
     }
 }
 
+// updates the info
 async function checkInfo(){
     let task;
     if(true){
