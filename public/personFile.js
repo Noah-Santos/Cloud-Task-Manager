@@ -99,6 +99,8 @@ btn.addEventListener('click', async(event)=>{
                             headers: {'Content-Type': 'application/json'},
                             body: JSON.stringify({assigned:newName.value}),  
                         })
+                    }else if(task.assigned != "unassigned"){
+                        newTask = 'none';
                     }
                 }
             });
