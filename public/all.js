@@ -62,7 +62,7 @@ const fetchPeople = async() =>{
                     <div class="taskAll">
                         <label for="${person.userID}" class="info">
                             <h2>${person.name}</h2>
-                            <h3>${person.age}</h3>
+                            <h3>Age: ${person.age}</h3>
                             <h4>Task: ${person.task}</h4>
                         </label>
                     </div>
