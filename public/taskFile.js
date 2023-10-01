@@ -90,17 +90,26 @@ btn.addEventListener('click', async(event)=>{
         }else{
             let taskChange = newTask.value;
             let descriptionChange = newDesc.value;
+            let taskAssign = '';
 
-            newPerson = newAssign.value;
+            if(true){
+                const {data} = await axios.get('/api/task');
+                data.map(task=>{
+                    if(task.name == taskChange){
+                        taskAssign += task.assigned;
+                    }
+                })
+            }
+
+
             // filters through the people objects
             const {data} = await axios.get('/api/people');
             console.log(data);
             // determines if the person has no task
             // if it doesn't, it assigns that person to the task
             data.map(person=>{
-                console.log(person)
                 if(person.name == newAssign.value){
-                    if(person.task == 'none' && person.task != taskChange){
+                    if(person.task == 'none' && taskAssign == 'unassigned'){
                         newPerson = person.name;
                         // updates the person
                         fetch(`/api/people/${person.userID}`, {
@@ -109,8 +118,8 @@ btn.addEventListener('click', async(event)=>{
                             body: JSON.stringify({task:taskChange}),
                             
                         })
-                    }else{
-                        newPerson = 'unassigned';
+                    }else if(taskAssign != 'unassigned'){
+                        newPerson = taskAssign;
                     }
                 }
             })

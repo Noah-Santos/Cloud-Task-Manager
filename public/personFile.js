@@ -93,7 +93,18 @@ btn.addEventListener('click', async(event)=>{
             let nameChange = newName.value;
             let ageChange = newAge.value;
 
-            newTask = newAssign.value;
+            let personTask = '';
+
+            // gets the persons task
+            if(true){
+                const {data} = await axios.get('/api/people');
+                data.map(person=>{
+                    if(person.name == nameChange){
+                        personTask += person.task;
+                    }
+                })
+            }
+
             // filters through the task objcts
             const {data} = await axios.get('/api/task');
             console.log(data);
@@ -102,7 +113,7 @@ btn.addEventListener('click', async(event)=>{
             data.map(task=>{
                 console.log(task)
                 if(task.name == newAssign.value){
-                    if(task.assigned == 'unassigned' && task.assigned != nameChange){
+                    if(task.assigned == 'unassigned' && personTask == 'none'){
                         newTask = task.name;
                         // updates the task
                         fetch(`/api/task/${task.taskID}`, {
@@ -110,8 +121,8 @@ btn.addEventListener('click', async(event)=>{
                             headers: {'Content-Type': 'application/json'},
                             body: JSON.stringify({assigned: nameChange}), 
                         })
-                    }else{
-                        newTask = 'none';
+                    }else if(personTask != 'unassigned'){
+                        newPerson = personTask;
                     }
                 }
             })
