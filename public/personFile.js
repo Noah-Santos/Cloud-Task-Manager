@@ -115,6 +115,10 @@ btn.addEventListener('click', async(event)=>{
                     }
                 }
             })
+            // if the input is empty, default value to none
+            if(newAssign.value == ''){
+                newTask = 'none';
+            }
 
             // updates the person
             fetch(`/api/people/${chosenID}`, {

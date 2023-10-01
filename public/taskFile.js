@@ -114,6 +114,10 @@ btn.addEventListener('click', async(event)=>{
                     }
                 }
             })
+            // if the input is empty, default value to unassigned
+            if(newAssign.value == ''){
+                newPerson = 'unassigned';
+            }
 
             // updates the task
             fetch(`/api/task/${chosenID}`, {
