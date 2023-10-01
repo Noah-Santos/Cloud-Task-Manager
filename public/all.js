@@ -115,17 +115,29 @@ function change(){
 // updates the info
 async function checkInfo(){
     let task;
+    let allTask;
+
     if(true){
         const {data} = await axios.get('/api/task');
+
+        // gets all of the task names that have no person assigned to them
         task = data.map(task=>{
             if(task.assigned == 'unassigned'){
                 return task.name;
             }
         })
+
+        // gets all of the task names
+        allTask = data.map(task=>{
+            return task.name;
+        })
     }
+    
     if(true){
         let {data} = await axios.get('/api/people');
         data.map(person=>{
+
+            // if the person has a task that was changed to unassigned, the task is removed from the person
             for(let i = 0; i < task.length; i++){
                 if(person.task == task[i]){
                     fetch(`/api/people/${person.userID}`, {
@@ -136,21 +148,49 @@ async function checkInfo(){
                     })
                 }
             }
+
+            // if the task is not found, remove the task from the person
+            let find = false;
+            for(let i = 0; i < allTask.length; i++){
+                if(allTask[i] == person.task){
+                    find = true;
+                }
+            }
+            if(find == false){
+                fetch(`/api/people/${person.userID}`, {
+                    method: "PUT",
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({task:'none'}),
+                    
+                })
+            }
         })
     }
 
     let person;
+    let allPeople;
+
     if(true){
         const {data} = await axios.get('/api/people');
+
+        // gets all the people with no tasks
         person = data.map(person=>{
             if(person.task == 'none'){
                 return person.name;
             }
         })
+
+        // gets all of the people
+        allPeople = data.map(person=>{
+            return person.name;
+        })
     }
+
     if(true){
         let {data} = await axios.get('/api/task');
         data.map(task=>{
+
+            // if the task has a person with no task, the person is removed from the task
             for(let i = 0; i < person.length; i++){
                 if(task.assigned == person[i]){
                     fetch(`/api/task/${task.taskID}`, {
@@ -160,6 +200,22 @@ async function checkInfo(){
                         
                     })
                 }
+            }
+
+            // if the task has a person that does not exist, remove the person from the task
+            let find = false;
+            for(let i = 0; i < allPeople.length; i++){
+                if(allPeople[i] == task.assigned){
+                    find = true;
+                }
+            }
+            if(find == false){
+                fetch(`/api/task/${task.taskID}`, {
+                    method: "PUT",
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({assigned:'unassigned'}),
+                    
+                })
             }
         })
     }
