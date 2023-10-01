@@ -181,17 +181,29 @@ async function infoPerson(){
 // if the task is unassigned from a person, it will unassign the person from the task once this person page loads
 async function checkInfo(){
     let person;
+    let allPeople;
+
     if(true){
         const {data} = await axios.get('/api/people');
+
+        // gets all the people with no tasks
         person = data.map(person=>{
             if(person.task == 'none'){
                 return person.name;
             }
         })
+
+        // gets all of the people
+        allPeople = data.map(person=>{
+            return person.name;
+        })
     }
+
     if(true){
         let {data} = await axios.get('/api/task');
         data.map(task=>{
+
+            // if the task has a person with no task, the person is removed from the task
             for(let i = 0; i < person.length; i++){
                 if(task.assigned == person[i]){
                     fetch(`/api/task/${task.taskID}`, {
@@ -201,6 +213,22 @@ async function checkInfo(){
                         
                     })
                 }
+            }
+
+            // if the task has a person that does not exist, remove the person from the task
+            let find = false;
+            for(let i = 0; i < allPeople.length; i++){
+                if(allPeople[i] == task.assigned){
+                    find = true;
+                }
+            }
+            if(find == false){
+                fetch(`/api/task/${task.taskID}`, {
+                    method: "PUT",
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({assigned:'unassigned'}),
+                    
+                })
             }
         })
     }
