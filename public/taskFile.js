@@ -90,38 +90,39 @@ btn.addEventListener('click', async(event)=>{
         }else{
             let taskChange = newTask.value;
             let descriptionChange = newDesc.value;
-        
-            // will determine what value should be assigned to assigned value of the task object
-            // also updates the person object to reflect being assigned to the task
-            if(newAssign.value == '' || newAssign.value == "unassigned"){
-                newPerson = 'unassigned';
-            }else if(newAssign.value != "unassigned"){
-                const {data} = await axios.get('/api/people');
-                let temp = newAssign.value;
-                data.map(person => {
-                    if(temp == person.name){
-                        newPerson = newAssign.value;
-                        if(person.task == 'none'){
-                            fetch(`/api/people/${person.userID}`, {
-                                method: "PUT",
-                                headers: {'Content-Type': 'application/json'},
-                                body: JSON.stringify({task:newTask.value}),  
-                            })
-                            // prevents a new task from being assigned to a person if they already have a task
-                        }else if(person.task != "none"){
-                            newPerson = 'unassigned';
-                        }
-                    }
-                });
-            }
 
-            // updates the object to assign the new person
+            newPerson = newAssign.value;
+            // filters through the people objects
+            const {data} = await axios.get('/api/people');
+            console.log(data);
+            // determines if the person has no task
+            // if it doesn't, it assigns that person to the task
+            data.map(person=>{
+                console.log(person)
+                if(person.name == newAssign.value){
+                    if(person.task == 'none' && person.task != taskChange){
+                        newPerson = person.name;
+                        // updates the person
+                        fetch(`/api/people/${person.userID}`, {
+                            method: "PUT",
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({task:taskChange}),
+                            
+                        })
+                    }else{
+                        newPerson = 'unassigned';
+                    }
+                }
+            })
+
+            // updates the task
             fetch(`/api/task/${chosenID}`, {
                 method: "PUT",
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({name: taskChange, description: descriptionChange, assigned:newPerson}),
                 
             })
+
             fetchTask();
             editMode = false;
             window.location.href = "./javascript.html";
@@ -155,50 +156,28 @@ function deleteThis(){
 
 // if the person is unassigned from a task, it will unassign the task from the person once this task page loads
 async function checkInfo(){
-    let person;
+    let task;
     if(true){
-        const {data} = await axios.get('/api/people');
-        person = data.map(person=>{
-            if(person.task == 'none'){
-                return person.name;
+        const {data} = await axios.get('/api/task');
+        task = data.map(task=>{
+            if(task.assigned == 'unassigned'){
+                return task.name;
             }
         })
     }
     if(true){
-        let {data} = await axios.get('/api/task');
-        data.map(task=>{
-            for(let i = 0; i < person.length; i++){
-                if(task.assigned == person[i]){
-                    fetch(`/api/task/${task.taskID}`, {
+        let {data} = await axios.get('/api/people');
+        data.map(person=>{
+            for(let i = 0; i < task.length; i++){
+                if(person.task == task[i]){
+                    fetch(`/api/people/${person.userID}`, {
                         method: "PUT",
                         headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({assigned:'unassigned'}),
+                        body: JSON.stringify({task:'none'}),
                         
                     })
                 }
             }
         })
     }
-
-    // let allPeople;
-    // if(true){
-    //     const {data} = await axios.get('/api/people');
-    //     allPeople = data.map(person=>{
-    //         return person.name;
-    //     })
-    // }
-    // if(true){
-    //     let {data} = await axios.get('/api/task');
-    //     data.map(task=>{
-    //         if(!allPeople.some(person=>{
-    //             person == task.assigned
-    //         })){
-    //             fetch(`/api/task/${task.taskID}`, {
-    //                 method: "PUT",
-    //                 headers: {'Content-Type': 'application/json'},
-    //                 body: JSON.stringify({assigned:'unassigned'}),
-    //             })
-    //         }
-    //     })
-    // }
 }
