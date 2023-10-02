@@ -5,7 +5,6 @@ const PersonSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Must provide a name'],
         trim: true,
-        maxLength: [20, "The name can't exceed 20 chracters"]
     },
     task:{
         type: String,

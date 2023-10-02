@@ -1,6 +1,10 @@
 let TASK = require('./models/tasks');
+let PERSON = require('./models/person');
+const express = require('express');
+const app = express();
+const morgan = require('morgan');
+require('dotenv').config();
 const connectDB = require('./db/connect');
-// const tasks = require('./models/tasks');
 
 const task = [
   {
@@ -145,15 +149,56 @@ const task = [
     }
   ];
 
-// async function pushData(){
-//     let data = await connectDB();
-//     // let tasks = await data.insert(task);
-//     // console.log(tasks)
-//     // for(let i = 0; i < task.length; i++){
-        
-//     // }
-//     // await data.Tasks.insert(task)
-//     db.Tasks.insert(task);
-// }
+const people =[
+    {
+        name: 'Noah Santos',
+        age: 17,
+        task: 'none',
+        userID: 1
+    },
+    {
+        name: 'Sherman Cruz',
+        age: 20,
+        task: 'none',
+        userID: 2
+    },
+    {
+        name: 'Bjorn Kruger',
+        age: 21,
+        task: 'none',
+        userID: 3
+    },
+    {
+        name: 'William Philips',
+        age: 15,
+        task: 'none',
+        userID: 4
+    },
+    {
+        name: 'George Patton',
+        age: 28,
+        task: 'none',
+        userID: 5
+    }
+]
 
-// pushData();
+async function pushData(){
+    await connectDB(process.env.MONGO_URI);
+    for(let i = 0; i < task.length; i++){
+        const data = new TASK(
+            task[i]
+        )
+        await data.validate();
+        await data.save();
+    }
+
+    for(let i = 0; i < people.length; i++){
+        const data = new PERSON(
+            people[i]
+        )
+        await data.validate();
+        await data.save();
+    }
+}
+
+pushData();
